@@ -109,7 +109,7 @@ public class MainActivity extends Activity {
         tmpTR.add("2015-10-16");
         DPCManager.getInstance().setDecorTR(tmpTR);
 
-        DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
+        DatePicker picker = findViewById(R.id.main_dp);
         picker.setDate(2015, 10);
         picker.setFestivalDisplay(false);
         picker.setTodayDisplay(false);
@@ -168,7 +168,7 @@ public class MainActivity extends Activity {
 //        });
 
         // 对话框下的DatePicker示例 Example in dialog
-        Button btnPick = (Button) findViewById(R.id.main_btn);
+        Button btnPick = findViewById(R.id.main_btn);
         btnPick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
