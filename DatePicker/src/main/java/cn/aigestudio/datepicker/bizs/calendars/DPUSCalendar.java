@@ -41,7 +41,6 @@ public class DPUSCalendar extends DPCalendar {
             {12},
             {1},
             {25}};
-    private static final String[][] HOLIDAY = {{"1"}, {""}, {""}, {""}, {"24", "25", "26"}, {""}, {"4", "5", "6"}, {"30"}, {"1", "2"}, {""}, {"27", "28", "29", "30"}, {"25", "26", "27"}};
 
     @Override
     public String[][] buildMonthFestival(int year, int month) {
@@ -55,15 +54,6 @@ public class DPUSCalendar extends DPCalendar {
                     tmp[i][j] = getFestivalG(month, Integer.valueOf(day));
                 }
             }
-        }
-        return tmp;
-    }
-
-    @Override
-    public Set<String> buildMonthHoliday(int year, int month) {
-        Set<String> tmp = new HashSet<>();
-        if (year == 2015) {
-            Collections.addAll(tmp, HOLIDAY[month - 1]);
         }
         return tmp;
     }

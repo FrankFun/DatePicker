@@ -2,11 +2,13 @@ package cn.aigestudio.datepicker.demo;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +18,6 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import cn.aigestudio.datepicker.bizs.calendars.DPCManager;
@@ -31,6 +32,10 @@ import cn.aigestudio.datepicker.views.DatePicker;
  * @author AigeStudio 2015-03-26
  */
 public class MainActivity extends Activity {
+    Bitmap absent;
+    Bitmap leave;
+    Bitmap normal;
+    Bitmap launcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +43,11 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
-
+        absent = BitmapFactory.decodeResource(getResources(), R.drawable.ic_attendance_absent);
+        leave = BitmapFactory.decodeResource(getResources(), R.drawable.ic_attendance_leave);
+        normal = BitmapFactory.decodeResource(getResources(), R.drawable.ic_attendance_normal);
+        launcher = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);
+        Log.e("onCreate: ", absent.getWidth() + ":" + absent.getHeight());
 //        // 默认多选模式
 //        DatePicker picker = (DatePicker) findViewById(R.id.main_dp);
 //        picker.setDate(2015, 7);
@@ -89,65 +98,46 @@ public class MainActivity extends Activity {
 //        });
 
         // 自定义前景装饰物绘制示例 Example of custom date's foreground decor
-        List<String> tmpTL = new ArrayList<>();
-        tmpTL.add("2015-10-5");
-        tmpTL.add("2015-10-6");
-        tmpTL.add("2015-10-7");
-        tmpTL.add("2015-10-8");
-        tmpTL.add("2015-10-9");
-        tmpTL.add("2015-10-10");
-        tmpTL.add("2015-10-11");
-        DPCManager.getInstance().setDecorTL(tmpTL);
-
         List<String> tmpTR = new ArrayList<>();
-        tmpTR.add("2015-10-10");
-        tmpTR.add("2015-10-11");
-        tmpTR.add("2015-10-12");
-        tmpTR.add("2015-10-13");
-        tmpTR.add("2015-10-14");
-        tmpTR.add("2015-10-15");
-        tmpTR.add("2015-10-16");
+        tmpTR.add("2018-1-5");
+        tmpTR.add("2018-1-6");
+        tmpTR.add("2018-1-7");
+        tmpTR.add("2018-1-8");
+        tmpTR.add("2018-1-9");
+        tmpTR.add("2018-1-10");
+        tmpTR.add("2018-1-11");
+        tmpTR.add("2018-1-12");
+        tmpTR.add("2018-1-13");
+        tmpTR.add("2018-1-14");
+        tmpTR.add("2018-1-15");
+        tmpTR.add("2018-1-16");
         DPCManager.getInstance().setDecorTR(tmpTR);
 
         DatePicker picker = findViewById(R.id.main_dp);
-        picker.setDate(2015, 10);
-        picker.setFestivalDisplay(false);
-        picker.setTodayDisplay(false);
+        picker.setDate(2018, 1);
+        picker.setFestivalDisplay(true);
+        picker.setTodayDisplay(true);
         picker.setHolidayDisplay(false);
         picker.setDeferredDisplay(false);
         picker.setMode(DPMode.NONE);
         picker.setDPDecor(new DPDecor() {
-            @Override
-            public void drawDecorTL(Canvas canvas, Rect rect, Paint paint, String data) {
-                super.drawDecorTL(canvas, rect, paint, data);
-                switch (data) {
-                    case "2015-10-5":
-                    case "2015-10-7":
-                    case "2015-10-9":
-                    case "2015-10-11":
-                        paint.setColor(Color.GREEN);
-                        canvas.drawRect(rect, paint);
-                        break;
-                    default:
-                        paint.setColor(Color.RED);
-                        canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2, paint);
-                        break;
-                }
-            }
 
             @Override
             public void drawDecorTR(Canvas canvas, Rect rect, Paint paint, String data) {
                 super.drawDecorTR(canvas, rect, paint, data);
                 switch (data) {
-                    case "2015-10-10":
-                    case "2015-10-11":
-                    case "2015-10-12":
-                        paint.setColor(Color.BLUE);
-                        canvas.drawCircle(rect.centerX(), rect.centerY(), rect.width() / 2, paint);
+                    case "2018-1-10":
+                    case "2018-1-11":
+                    case "2018-1-12":
+                        canvas.drawBitmap(absent, null, rect, paint);
+                        break;
+                    case "2018-1-15":
+                    case "2018-1-17":
+                    case "2018-1-19":
+                        canvas.drawBitmap(leave, null, rect, paint);
                         break;
                     default:
-                        paint.setColor(Color.YELLOW);
-                        canvas.drawRect(rect, paint);
+                        canvas.drawBitmap(normal, null, rect, null);
                         break;
                 }
             }

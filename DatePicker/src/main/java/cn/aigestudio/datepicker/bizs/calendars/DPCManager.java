@@ -7,10 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import cn.aigestudio.datepicker.entities.DPInfo;
-import cn.aigestudio.datepicker.views.DatePicker;
 
 /**
  * 日期管理器
@@ -176,7 +174,6 @@ public final class DPCManager {
         String[][] strG = c.buildMonthG(year, month);
         String[][] strF = c.buildMonthFestival(year, month);
 
-        Set<String> strHoliday = c.buildMonthHoliday(year, month);
         Set<String> strWeekend = c.buildMonthWeekend(year, month);
 
         Set<String> decorBG = DECOR_CACHE_BG.get(year + ":" + month);
@@ -194,8 +191,6 @@ public final class DPCManager {
                 } else {
                     tmp.strF = strF[i][j];
                 }
-                if (!TextUtils.isEmpty(tmp.strG) && strHoliday.contains(tmp.strG))
-                    tmp.isHoliday = true;
                 if (!TextUtils.isEmpty(tmp.strG)) tmp.isToday =
                         c.isToday(year, month, Integer.valueOf(tmp.strG));
                 if (strWeekend.contains(tmp.strG)) tmp.isWeekend = true;
@@ -204,9 +199,6 @@ public final class DPCManager {
                             ((DPCNCalendar) c).isSolarTerm(year, month, Integer.valueOf(tmp.strG));
                     if (!TextUtils.isEmpty(strF[i][j]) && strF[i][j].endsWith("F"))
                         tmp.isFestival = true;
-                    if (!TextUtils.isEmpty(tmp.strG))
-                        tmp.isDeferred = ((DPCNCalendar) c)
-                                .isDeferred(year, month, Integer.valueOf(tmp.strG));
                 } else {
                     tmp.isFestival = !TextUtils.isEmpty(strF[i][j]);
                 }

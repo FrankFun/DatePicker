@@ -13,7 +13,7 @@ import java.util.Set;
  * @author AigeStudio 2015-06-15
  */
 public abstract class DPCalendar {
-    protected final Calendar c = Calendar.getInstance();
+    protected final Calendar calendar = Calendar.getInstance();
 
     /**
      * 获取某年某月的节日数组
@@ -25,17 +25,6 @@ public abstract class DPCalendar {
      * @return 该月节日数组
      */
     public abstract String[][] buildMonthFestival(int year, int month);
-
-    /**
-     * 获取某年某月的假期数组
-     * <p/>
-     * Build the holiday date array of given year and month
-     *
-     * @param year  某年
-     * @param month 某月
-     * @return 该月假期数组
-     */
-    public abstract Set<String> buildMonthHoliday(int year, int month);
 
     /**
      * 判断某年是否为闰年
@@ -75,9 +64,9 @@ public abstract class DPCalendar {
      * @return 某年某月的公历天数数组
      */
     public String[][] buildMonthG(int year, int month) {
-        c.clear();
+        calendar.clear();
         String tmp[][] = new String[6][7];
-        c.set(year, month - 1, 1);
+        calendar.set(year, month - 1, 1);
 
         int daysInMonth = 0;
         if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 ||
@@ -92,7 +81,7 @@ public abstract class DPCalendar {
                 daysInMonth = 28;
             }
         }
-        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;
         int day = 1;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
@@ -118,15 +107,15 @@ public abstract class DPCalendar {
      */
     public Set<String> buildMonthWeekend(int year, int month) {
         Set<String> set = new HashSet<>();
-        c.clear();
-        c.set(year, month - 1, 1);
+        calendar.clear();
+        calendar.set(year, month - 1, 1);
         do {
-            int day = c.get(Calendar.DAY_OF_WEEK);
+            int day = calendar.get(Calendar.DAY_OF_WEEK);
             if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
-                set.add(String.valueOf(c.get(Calendar.DAY_OF_MONTH)));
+                set.add(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
             }
-            c.add(Calendar.DAY_OF_YEAR, 1);
-        } while (c.get(Calendar.MONTH) == month - 1);
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        } while (calendar.get(Calendar.MONTH) == month - 1);
         return set;
     }
 
