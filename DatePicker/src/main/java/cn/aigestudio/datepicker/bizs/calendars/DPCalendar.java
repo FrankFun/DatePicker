@@ -1,8 +1,6 @@
 package cn.aigestudio.datepicker.bizs.calendars;
 
 import java.util.Calendar;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 月历抽象父类
@@ -32,25 +30,8 @@ public abstract class DPCalendar {
      * @param year ...
      * @return true表示闰年
      */
-    public boolean isLeapYear(int year) {
+    private boolean isLeapYear(int year) {
         return (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0));
-    }
-
-    /**
-     * 判断给定日期是否为今天
-     *
-     * @param year  某年
-     * @param month 某月
-     * @param day   某天
-     * @return ...
-     */
-    public boolean isToday(int year, int month, int day) {
-        Calendar c1 = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        c1.set(year, month - 1, day);
-        return (c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR)) &&
-                (c1.get(Calendar.MONTH) == (c2.get(Calendar.MONTH))) &&
-                (c1.get(Calendar.DAY_OF_MONTH) == c2.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
@@ -63,34 +44,33 @@ public abstract class DPCalendar {
      * @param month 某月
      * @return 某年某月的公历天数数组
      */
-    public String[][] buildMonthG(int year, int month) {
+    String[][] buildMonthG(int year, int month) {
         calendar.clear();
         String tmp[][] = new String[6][7];
         calendar.set(year, month - 1, 1);
-
-        int daysInMonth = 0;
-        if (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 ||
-                month == 12) {
-            daysInMonth = 31;
-        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
-            daysInMonth = 30;
-        } else if (month == 2) {
+        int daysInMonth;
+        if (month == 2) {
             if (isLeapYear(year)) {
                 daysInMonth = 29;
             } else {
                 daysInMonth = 28;
             }
+        } else if (month == 4 || month == 6 || month == 9 || month == 11) {
+            daysInMonth = 30;
+        } else {
+            daysInMonth = 31;
         }
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - Calendar.SUNDAY;
+        //周天为第一天
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
         int day = 1;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
                 tmp[i][j] = "";
                 if (i == 0 && j >= dayOfWeek) {
-                    tmp[i][j] = "" + day;
+                    tmp[i][j] += day;
                     day++;
                 } else if (i > 0 && day <= daysInMonth) {
-                    tmp[i][j] = "" + day;
+                    tmp[i][j] += day;
                     day++;
                 }
             }
@@ -98,34 +78,13 @@ public abstract class DPCalendar {
         return tmp;
     }
 
-    /**
-     * 生成某年某月的周末日期集合
-     *
-     * @param year  某年
-     * @param month 某月
-     * @return 某年某月的周末日期集合
-     */
-    public Set<String> buildMonthWeekend(int year, int month) {
-        Set<String> set = new HashSet<>();
-        calendar.clear();
-        calendar.set(year, month - 1, 1);
-        do {
-            int day = calendar.get(Calendar.DAY_OF_WEEK);
-            if (day == Calendar.SATURDAY || day == Calendar.SUNDAY) {
-                set.add(String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
-            }
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
-        } while (calendar.get(Calendar.MONTH) == month - 1);
-        return set;
-    }
-
-    protected long GToNum(int year, int month, int day) {
+    long GToNum(int year, int month, int day) {
         month = (month + 9) % 12;
         year = year - month / 10;
         return 365 * year + year / 4 - year / 100 + year / 400 + (month * 306 + 5) / 10 + (day - 1);
     }
 
-    protected int getBitInt(int data, int length, int shift) {
+    int getBitInt(int data, int length, int shift) {
         return (data & (((1 << length) - 1) << shift)) >> shift;
     }
 }

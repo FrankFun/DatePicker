@@ -31,7 +31,6 @@ public class DPDecor {
      * @see #drawDecorTL(Canvas, Rect, Paint, String)
      */
     public void drawDecorTL(Canvas canvas, Rect rect, Paint paint) {
-
     }
 
     /**
@@ -51,7 +50,6 @@ public class DPDecor {
      * @see #drawDecorT(Canvas, Rect, Paint, String)
      */
     public void drawDecorT(Canvas canvas, Rect rect, Paint paint) {
-
     }
 
     /**
@@ -71,7 +69,6 @@ public class DPDecor {
      * @see #drawDecorTR(Canvas, Rect, Paint, String)
      */
     public void drawDecorTR(Canvas canvas, Rect rect, Paint paint) {
-
     }
 
     /**
@@ -91,7 +88,6 @@ public class DPDecor {
      * @see #drawDecorL(Canvas, Rect, Paint, String)
      */
     public void drawDecorL(Canvas canvas, Rect rect, Paint paint) {
-
     }
 
     /**
@@ -111,7 +107,6 @@ public class DPDecor {
      * @see #drawDecorR(Canvas, Rect, Paint, String)
      */
     public void drawDecorR(Canvas canvas, Rect rect, Paint paint) {
-
     }
 
     /**

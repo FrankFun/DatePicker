@@ -2,10 +2,12 @@ package cn.aigestudio.datepicker.bizs.calendars;
 
 import android.text.TextUtils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Set;
 
 import cn.aigestudio.datepicker.entities.DPInfo;
@@ -17,17 +19,20 @@ import cn.aigestudio.datepicker.entities.DPInfo;
  * @author AigeStudio 2015-06-12
  */
 public final class DPCManager {
-    private static final HashMap<Integer, HashMap<Integer, DPInfo[][]>> DATE_CACHE = new HashMap<>();
+    private static HashMap<Integer, HashMap<Integer, DPInfo[][]>> DATE_CACHE = new HashMap<>();
 
-    private static final HashMap<String, Set<String>> DECOR_CACHE_BG = new HashMap<>();
-    private static final HashMap<String, Set<String>> DECOR_CACHE_TL = new HashMap<>();
-    private static final HashMap<String, Set<String>> DECOR_CACHE_T = new HashMap<>();
-    private static final HashMap<String, Set<String>> DECOR_CACHE_TR = new HashMap<>();
-    private static final HashMap<String, Set<String>> DECOR_CACHE_L = new HashMap<>();
-    private static final HashMap<String, Set<String>> DECOR_CACHE_R = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_BG = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_TL = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_T = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_TR = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_L = new HashMap<>();
+    private static HashMap<String, Set<String>> DECOR_CACHE_R = new HashMap<>();
 
     private static DPCManager sManager;
-
+    private Calendar calendar = Calendar.getInstance();
+    private int todayYear = calendar.get(Calendar.YEAR);
+    private int todayMonth = calendar.get(Calendar.MONTH) + 1;
+    private String todayDay = calendar.get(Calendar.DAY_OF_MONTH) + "";
     private DPCalendar c;
 
     private DPCManager() {
@@ -60,7 +65,7 @@ public final class DPCManager {
      *
      * @param c ...
      */
-    public void initCalendar(DPCalendar c) {
+    private void initCalendar(DPCalendar c) {
         this.c = c;
     }
 
@@ -69,10 +74,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor of background
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorBG(List<String> date) {
-        setDecor(date, DECOR_CACHE_BG);
+    public void setDecorBG(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_BG);
     }
 
     /**
@@ -80,10 +85,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor on Top left
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorTL(List<String> date) {
-        setDecor(date, DECOR_CACHE_TL);
+    public void setDecorTL(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_TL);
     }
 
     /**
@@ -91,10 +96,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor on Top
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorT(List<String> date) {
-        setDecor(date, DECOR_CACHE_T);
+    public void setDecorT(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_T);
     }
 
     /**
@@ -102,10 +107,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor on Top right
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorTR(List<String> date) {
-        setDecor(date, DECOR_CACHE_TR);
+    public void setDecorTR(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_TR);
     }
 
     /**
@@ -113,10 +118,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor on left
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorL(List<String> date) {
-        setDecor(date, DECOR_CACHE_L);
+    public void setDecorL(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_L);
     }
 
     /**
@@ -124,10 +129,10 @@ public final class DPCManager {
      * <p/>
      * Set date which has decor on right
      *
-     * @param date 日期列表 List of date
+     * @param dates 日期列表 List of date
      */
-    public void setDecorR(List<String> date) {
-        setDecor(date, DECOR_CACHE_R);
+    public void setDecorR(List<String> dates) {
+        setDecor(dates, DECOR_CACHE_R);
     }
 
     /**
@@ -158,7 +163,7 @@ public final class DPCManager {
     private void setDecor(List<String> date, HashMap<String, Set<String>> cache) {
         for (String str : date) {
             int index = str.lastIndexOf("-");
-            String key = str.substring(0, index).replace("-", ":");
+            String key = str.substring(0, index);
             Set<String> days = cache.get(key);
             if (null == days) {
                 days = new HashSet<>();
@@ -173,15 +178,14 @@ public final class DPCManager {
 
         String[][] strG = c.buildMonthG(year, month);
         String[][] strF = c.buildMonthFestival(year, month);
+        String key = year + "-" + month;
+        Set<String> decorBG = DECOR_CACHE_BG.get(key);
+        Set<String> decorTL = DECOR_CACHE_TL.get(key);
+        Set<String> decorT = DECOR_CACHE_T.get(key);
+        Set<String> decorTR = DECOR_CACHE_TR.get(key);
+        Set<String> decorL = DECOR_CACHE_L.get(key);
+        Set<String> decorR = DECOR_CACHE_R.get(key);
 
-        Set<String> strWeekend = c.buildMonthWeekend(year, month);
-
-        Set<String> decorBG = DECOR_CACHE_BG.get(year + ":" + month);
-        Set<String> decorTL = DECOR_CACHE_TL.get(year + ":" + month);
-        Set<String> decorT = DECOR_CACHE_T.get(year + ":" + month);
-        Set<String> decorTR = DECOR_CACHE_TR.get(year + ":" + month);
-        Set<String> decorL = DECOR_CACHE_L.get(year + ":" + month);
-        Set<String> decorR = DECOR_CACHE_R.get(year + ":" + month);
         for (int i = 0; i < info.length; i++) {
             for (int j = 0; j < info[i].length; j++) {
                 DPInfo tmp = new DPInfo();
@@ -191,9 +195,8 @@ public final class DPCManager {
                 } else {
                     tmp.strF = strF[i][j];
                 }
-                if (!TextUtils.isEmpty(tmp.strG)) tmp.isToday =
-                        c.isToday(year, month, Integer.valueOf(tmp.strG));
-                if (strWeekend.contains(tmp.strG)) tmp.isWeekend = true;
+                tmp.isToday = todayYear == year && todayMonth == month && Objects.equals(tmp.strG, todayDay);
+                if (j == 0 || j == info[i].length - 1) tmp.isWeekend = true;
                 if (c instanceof DPCNCalendar) {
                     if (!TextUtils.isEmpty(tmp.strG)) tmp.isSolarTerms =
                             ((DPCNCalendar) c).isSolarTerm(year, month, Integer.valueOf(tmp.strG));

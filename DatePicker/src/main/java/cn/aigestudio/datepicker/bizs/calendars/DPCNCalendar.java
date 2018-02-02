@@ -2,10 +2,7 @@ package cn.aigestudio.datepicker.bizs.calendars;
 
 import android.text.TextUtils;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * 中国月历
@@ -170,7 +167,6 @@ public class DPCNCalendar extends DPCalendar {
         int day;
         int month;
         int year;
-
         boolean isLeap;
     }
 
@@ -226,7 +222,7 @@ public class DPCNCalendar extends DPCalendar {
      * @param day   公历日
      * @return ...
      */
-    public boolean isSolarTerm(int year, int month, int day) {
+    boolean isSolarTerm(int year, int month, int day) {
         return null == getSolarTerm(year, month, day);
     }
 

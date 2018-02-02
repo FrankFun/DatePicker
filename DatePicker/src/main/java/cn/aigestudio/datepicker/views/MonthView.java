@@ -124,6 +124,11 @@ public class MonthView extends View {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:

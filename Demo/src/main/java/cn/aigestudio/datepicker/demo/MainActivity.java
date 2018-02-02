@@ -114,12 +114,12 @@ public class MainActivity extends Activity {
         DPCManager.getInstance().setDecorTR(tmpTR);
 
         DatePicker picker = findViewById(R.id.main_dp);
-        picker.setDate(2018, 1);
+        picker.setDate(2018, 2);
         picker.setFestivalDisplay(true);
         picker.setTodayDisplay(true);
         picker.setHolidayDisplay(false);
-        picker.setDeferredDisplay(false);
-        picker.setMode(DPMode.NONE);
+        picker.setDeferredDisplay(true);
+        picker.setMode(DPMode.MULTIPLE);
         picker.setDPDecor(new DPDecor() {
 
             @Override
