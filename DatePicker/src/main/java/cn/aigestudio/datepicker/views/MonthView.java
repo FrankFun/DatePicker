@@ -74,7 +74,7 @@ public class MonthView extends View {
     private int topYear, topMonth;
     private int bottomYear, bottomMonth;
     private int width, height;
-    private int sizeDecor, sizeDecor2x, sizeDecor3x;
+    private int sizeDecor, sizeDecor2x, sizeDecor3x, sizeDecorPadding;
     private int lastPointX, lastPointY;
     private int lastMoveX, lastMoveY;
     private int criticalWidth, criticalHeight;
@@ -123,10 +123,6 @@ public class MonthView extends View {
         }
     }
 
-    @Override
-    public boolean performClick() {
-        return super.performClick();
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -214,7 +210,7 @@ public class MonthView extends View {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int measureWidth = MeasureSpec.getSize(widthMeasureSpec);
-        setMeasuredDimension(measureWidth, (int) (measureWidth * 6F / 7F));
+        setMeasuredDimension(measureWidth, (int) (measureWidth * 3F / 4F));
     }
 
     @Override
@@ -237,6 +233,7 @@ public class MonthView extends View {
         animZoomOut2 = (int) (cellW * 1.1F);
 
         sizeDecor = (int) (cellW / 3F);
+        sizeDecorPadding = sizeDecor / 6;
         sizeDecor2x = sizeDecor * 2;
         sizeDecor3x = sizeDecor * 3;
 
@@ -441,35 +438,36 @@ public class MonthView extends View {
             String data = centerYear + "-" + centerMonth + "-" + info.strG;
             if (null != mDPDecor && info.isDecorTL) {
                 canvas.save();
-                canvas.clipRect(rect.left, rect.top, rect.left + sizeDecor, rect.top + sizeDecor);
+                canvas.clipRect(rect.left + sizeDecorPadding, rect.top + sizeDecorPadding,
+                        rect.left + sizeDecor - sizeDecorPadding, rect.top + sizeDecor - sizeDecorPadding);
                 mDPDecor.drawDecorTL(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
             if (null != mDPDecor && info.isDecorT) {
                 canvas.save();
-                canvas.clipRect(rect.left + sizeDecor, rect.top, rect.left + sizeDecor2x,
-                        rect.top + sizeDecor);
+                canvas.clipRect(rect.left + sizeDecor + sizeDecorPadding, rect.top + sizeDecorPadding, rect.left + sizeDecor2x - sizeDecorPadding,
+                        rect.top + sizeDecor - sizeDecorPadding);
                 mDPDecor.drawDecorT(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
             if (null != mDPDecor && info.isDecorTR) {
                 canvas.save();
-                canvas.clipRect(rect.left + sizeDecor2x, rect.top, rect.left + sizeDecor3x,
-                        rect.top + sizeDecor);
+                canvas.clipRect(rect.left + sizeDecor2x + sizeDecorPadding, rect.top + sizeDecorPadding,
+                        rect.left + sizeDecor3x - sizeDecorPadding, rect.top + sizeDecor - sizeDecorPadding);
                 mDPDecor.drawDecorTR(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
             if (null != mDPDecor && info.isDecorL) {
                 canvas.save();
-                canvas.clipRect(rect.left, rect.top + sizeDecor, rect.left + sizeDecor,
-                        rect.top + sizeDecor2x);
+                canvas.clipRect(rect.left + sizeDecorPadding, rect.top + sizeDecor + sizeDecorPadding,
+                        rect.left + sizeDecor - sizeDecorPadding, rect.top + sizeDecor2x - sizeDecorPadding);
                 mDPDecor.drawDecorL(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
             if (null != mDPDecor && info.isDecorR) {
                 canvas.save();
-                canvas.clipRect(rect.left + sizeDecor2x, rect.top + sizeDecor,
-                        rect.left + sizeDecor3x, rect.top + sizeDecor2x);
+                canvas.clipRect(rect.left + sizeDecor2x + sizeDecorPadding, rect.top + sizeDecor + sizeDecorPadding,
+                        rect.left + sizeDecor3x - sizeDecorPadding, rect.top + sizeDecor2x - sizeDecorPadding);
                 mDPDecor.drawDecorR(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }

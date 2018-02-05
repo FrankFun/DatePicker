@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -20,6 +19,7 @@ import cn.aigestudio.datepicker.entities.DPInfo;
  */
 public final class DPCManager {
     private static HashMap<Integer, HashMap<Integer, DPInfo[][]>> DATE_CACHE = new HashMap<>();
+    private static HashMap<Integer, Set<Integer>> DECOR_CHANGED = new HashMap<>();
 
     private static HashMap<String, Set<String>> DECOR_CACHE_BG = new HashMap<>();
     private static HashMap<String, Set<String>> DECOR_CACHE_TL = new HashMap<>();
@@ -69,70 +69,28 @@ public final class DPCManager {
         this.c = c;
     }
 
-    /**
-     * 设置有背景标识物的日期
-     * <p/>
-     * Set date which has decor of background
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorBG(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_BG);
+    public void addDecorBG(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_BG);
     }
 
-    /**
-     * 设置左上角有标识物的日期
-     * <p/>
-     * Set date which has decor on Top left
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorTL(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_TL);
+    public void addDecorTL(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_TL);
     }
 
-    /**
-     * 设置顶部有标识物的日期
-     * <p/>
-     * Set date which has decor on Top
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorT(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_T);
+    public void addDecorT(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_T);
     }
 
-    /**
-     * 设置右上角有标识物的日期
-     * <p/>
-     * Set date which has decor on Top right
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorTR(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_TR);
+    public void addDecorTR(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_TR);
     }
 
-    /**
-     * 设置左边有标识物的日期
-     * <p/>
-     * Set date which has decor on left
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorL(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_L);
+    public void addDecorL(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_L);
     }
 
-    /**
-     * 设置右上角有标识物的日期
-     * <p/>
-     * Set date which has decor on right
-     *
-     * @param dates 日期列表 List of date
-     */
-    public void setDecorR(List<String> dates) {
-        setDecor(dates, DECOR_CACHE_R);
+    public void addDecorR(int year, int month, int day) {
+        addDecor(year, month, day, DECOR_CACHE_R);
     }
 
     /**
@@ -160,17 +118,33 @@ public final class DPCManager {
         return dataOfMonth;
     }
 
-    private void setDecor(List<String> date, HashMap<String, Set<String>> cache) {
-        for (String str : date) {
-            int index = str.lastIndexOf("-");
-            String key = str.substring(0, index);
-            Set<String> days = cache.get(key);
-            if (null == days) {
-                days = new HashSet<>();
-            }
-            days.add(str.substring(index + 1, str.length()));
+    private void addDecor(int year, int month, int day, HashMap<String, Set<String>> cache) {
+        String key = year + "-" + month;
+        Set<String> days = cache.get(key);
+        if (null == days) {
+            days = new HashSet<>();
             cache.put(key, days);
         }
+        days.add(day + "");
+        Set<Integer> monthsChanged = DECOR_CHANGED.get(year);
+        if (monthsChanged == null) {
+            monthsChanged = new HashSet<>();
+            DECOR_CHANGED.put(year, monthsChanged);
+        }
+        monthsChanged.add(month);
+    }
+
+    public void notifyDataSetChanged() {
+        for (Integer year : DECOR_CHANGED.keySet()) {
+            for (Integer month : DECOR_CHANGED.get(year)) {
+                DPInfo[][] dataOfMonth = buildDPInfo(year, month);
+                HashMap<Integer, DPInfo[][]> dataOfYear = DATE_CACHE.get(year);
+                if (null == dataOfYear) dataOfYear = new HashMap<>();
+                dataOfYear.put((month), dataOfMonth);
+                DATE_CACHE.put(year, dataOfYear);
+            }
+        }
+        DECOR_CHANGED.clear();
     }
 
     private DPInfo[][] buildDPInfo(int year, int month) {
