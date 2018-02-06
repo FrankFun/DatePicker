@@ -176,16 +176,16 @@ public class DPCNCalendar extends DPCalendar {
     }
 
     private String[][] buildMonthL(int year, int month) {
-        String[][] gregorianMonth = buildMonthG(year, month);
+        int[][] gregorianMonth = buildMonthG(year, month);
         Global global = new Global();
         String tmp[][] = new String[6][7];
         for (int i = 0; i < tmp.length; i++) {
             for (int j = 0; j < tmp[0].length; j++) {
                 tmp[i][j] = "";
-                if (!TextUtils.isEmpty(gregorianMonth[i][j])) {
+                if (0!=gregorianMonth[i][j]) {
                     global.year = year;
                     global.month = month;
-                    global.day = Integer.valueOf(gregorianMonth[i][j]);
+                    global.day = gregorianMonth[i][j];
                     China china = null;
                     String result = "";
                     if (year >= 1900 && year <= 2100) {

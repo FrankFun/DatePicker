@@ -15,7 +15,6 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.os.Build;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -29,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import cn.aigestudio.datepicker.bizs.calendars.DPCManager;
-import cn.aigestudio.datepicker.bizs.decors.DPDecor;
 import cn.aigestudio.datepicker.bizs.themes.DPTManager;
 import cn.aigestudio.datepicker.cons.DPMode;
 import cn.aigestudio.datepicker.entities.DPInfo;
@@ -64,7 +62,7 @@ public class MonthView extends View {
 
     private DPMode mDPMode = DPMode.MULTIPLE;
     private SlideMode mSlideMode;
-    private DPDecor mDPDecor;
+//    private DPDecor mDPDecor;
 
     private int circleRadius;
     private int indexYear, indexMonth;
@@ -316,11 +314,11 @@ public class MonthView extends View {
         DPInfo[][] info = mCManager.obtainDPInfo(year, month);
         DPInfo[][] result;
         Region[][] tmp;
-        if (TextUtils.isEmpty(info[4][0].strG)) {
+        if (0 == info[4][0].strG) {
             tmp = MONTH_REGIONS_4;
             arrayClear(INFO_4);
             result = arrayCopy(info, INFO_4);
-        } else if (TextUtils.isEmpty(info[5][0].strG)) {
+        } else if (0 == info[5][0].strG) {
             tmp = MONTH_REGIONS_5;
             arrayClear(INFO_5);
             result = arrayCopy(info, INFO_5);
@@ -345,9 +343,10 @@ public class MonthView extends View {
     }
 
     private void drawBG(Canvas canvas, Rect rect, DPInfo info) {
-        if (null != mDPDecor && info.isDecorBG) {
-            mDPDecor.drawDecorBG(canvas, rect, mPaint,
-                    centerYear + "-" + centerMonth + "-" + info.strG);
+        if (info.isDecorBG != null) {
+//            mDPDecor.drawDecorBG(canvas, rect, mPaint,
+//                    centerYear + "-" + centerMonth + "-" + info.strG);
+            canvas.drawBitmap(info.isDecorBG, null, rect, mPaint);
         }
         if (info.isToday && isTodayDisplay) {
             drawBGToday(canvas, rect);
@@ -373,7 +372,8 @@ public class MonthView extends View {
             canvas.drawCircle(rect.centerX(), rect.centerY(), circleRadius / 2F, mPaint);
     }
 
-    private void drawGregorian(Canvas canvas, Rect rect, String str, boolean isWeekend) {
+    private void drawGregorian(Canvas canvas, Rect rect, int str, boolean isWeekend) {
+        if (str == 0) return;
         mPaint.setTextSize(sizeTextGregorian);
         if (isWeekend) {
             mPaint.setColor(mTManager.colorWeekend());
@@ -383,7 +383,7 @@ public class MonthView extends View {
         float y = rect.centerY();
         if (!isFestivalDisplay)
             y = rect.centerY() + Math.abs(mPaint.ascent()) - (mPaint.descent() - mPaint.ascent()) / 2F;
-        canvas.drawText(str, rect.centerX(), y, mPaint);
+        canvas.drawText(str + "", rect.centerX(), y, mPaint);
     }
 
     private void drawFestival(Canvas canvas, Rect rect, String str, boolean isFestival) {
@@ -434,41 +434,46 @@ public class MonthView extends View {
     }
 
     private void drawDecor(Canvas canvas, Rect rect, DPInfo info) {
-        if (!TextUtils.isEmpty(info.strG)) {
-            String data = centerYear + "-" + centerMonth + "-" + info.strG;
-            if (null != mDPDecor && info.isDecorTL) {
+        if (0 != info.strG) {
+//            String data = centerYear + "-" + centerMonth + "-" + info.strG;
+            if (info.isDecorTL != null) {
                 canvas.save();
                 canvas.clipRect(rect.left + sizeDecorPadding, rect.top + sizeDecorPadding,
                         rect.left + sizeDecor - sizeDecorPadding, rect.top + sizeDecor - sizeDecorPadding);
-                mDPDecor.drawDecorTL(canvas, canvas.getClipBounds(), mPaint, data);
+                canvas.drawBitmap(info.isDecorTL, null, canvas.getClipBounds(), mPaint);
+//                mDPDecor.drawDecorTL(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
-            if (null != mDPDecor && info.isDecorT) {
+            if (info.isDecorT != null) {
                 canvas.save();
                 canvas.clipRect(rect.left + sizeDecor + sizeDecorPadding, rect.top + sizeDecorPadding, rect.left + sizeDecor2x - sizeDecorPadding,
                         rect.top + sizeDecor - sizeDecorPadding);
-                mDPDecor.drawDecorT(canvas, canvas.getClipBounds(), mPaint, data);
+                canvas.drawBitmap(info.isDecorT, null, canvas.getClipBounds(), mPaint);
+//                mDPDecor.drawDecorT(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
-            if (null != mDPDecor && info.isDecorTR) {
+            if (info.isDecorTR != null) {
                 canvas.save();
                 canvas.clipRect(rect.left + sizeDecor2x + sizeDecorPadding, rect.top + sizeDecorPadding,
                         rect.left + sizeDecor3x - sizeDecorPadding, rect.top + sizeDecor - sizeDecorPadding);
-                mDPDecor.drawDecorTR(canvas, canvas.getClipBounds(), mPaint, data);
+                canvas.drawBitmap(info.isDecorTR, null, canvas.getClipBounds(), mPaint);
+//                mDPDecor.drawDecorTR(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
-            if (null != mDPDecor && info.isDecorL) {
+            if (info.isDecorL != null) {
                 canvas.save();
                 canvas.clipRect(rect.left + sizeDecorPadding, rect.top + sizeDecor + sizeDecorPadding,
                         rect.left + sizeDecor - sizeDecorPadding, rect.top + sizeDecor2x - sizeDecorPadding);
-                mDPDecor.drawDecorL(canvas, canvas.getClipBounds(), mPaint, data);
+                canvas.drawBitmap(info.isDecorL, null, canvas.getClipBounds(), mPaint);
+//                mDPDecor.drawDecorL(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
-            if (null != mDPDecor && info.isDecorR) {
+            if (info.isDecorR != null) {
                 canvas.save();
                 canvas.clipRect(rect.left + sizeDecor2x + sizeDecorPadding, rect.top + sizeDecor + sizeDecorPadding,
                         rect.left + sizeDecor3x - sizeDecorPadding, rect.top + sizeDecor2x - sizeDecorPadding);
-                mDPDecor.drawDecorR(canvas, canvas.getClipBounds(), mPaint, data);
+                canvas.drawBitmap(info.isDecorR, null, canvas.getClipBounds(), mPaint);
+//                mDPDecor.drawDecorR(canvas, canvas.getClipBounds(), mPaint, data);
                 canvas.restore();
             }
         }
@@ -490,9 +495,9 @@ public class MonthView extends View {
         this.mDPMode = mode;
     }
 
-    void setDPDecor(DPDecor decor) {
-        this.mDPDecor = decor;
-    }
+//    void setDPDecor(DPDecor decor) {
+//        this.mDPDecor = decor;
+//    }
 
     DPMode getDPMode() {
         return mDPMode;
@@ -573,9 +578,9 @@ public class MonthView extends View {
     private void defineRegion(int x, int y) {
         DPInfo[][] info = mCManager.obtainDPInfo(centerYear, centerMonth);
         Region[][] tmp;
-        if (TextUtils.isEmpty(info[4][0].strG)) {
+        if (0 == info[4][0].strG) {
             tmp = MONTH_REGIONS_4;
-        } else if (TextUtils.isEmpty(info[5][0].strG)) {
+        } else if (0 == info[5][0].strG) {
             tmp = MONTH_REGIONS_5;
         } else {
             tmp = MONTH_REGIONS_6;
@@ -583,9 +588,10 @@ public class MonthView extends View {
         for (int i = 0; i < tmp.length; i++) {
             for (int j = 0; j < tmp[i].length; j++) {
                 Region region = tmp[i][j];
-                if (TextUtils.isEmpty(mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG)) {
+                if (0 == mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG) {
                     continue;
                 }
+                final int day = mCManager.obtainDPInfo(centerYear, centerMonth)[i][j].strG;
                 if (region.contains(x, y)) {
                     List<Region> regions = REGION_SELECTED.get(indexYear + ":" + indexMonth);
                     if (mDPMode == DPMode.SINGLE) {
@@ -627,7 +633,7 @@ public class MonthView extends View {
                                 @Override
                                 public void onAnimationEnd(Animator animation) {
                                     if (null != onDatePickedListener) {
-                                        onDatePickedListener.onDatePicked(date);
+                                        onDatePickedListener.onDatePicked(centerYear, centerMonth, day);
                                     }
                                 }
                             });
@@ -637,7 +643,7 @@ public class MonthView extends View {
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
                             invalidate();
                             if (null != onDatePickedListener) {
-                                onDatePickedListener.onDatePicked(date);
+                                onDatePickedListener.onDatePicked(centerYear, centerMonth, day);
                             }
                         }
                     } else if (mDPMode == DPMode.MULTIPLE) {
@@ -769,35 +775,35 @@ public class MonthView extends View {
 
         private ShapeDrawable shape;
 
-        public BGCircle(ShapeDrawable shape) {
+        BGCircle(ShapeDrawable shape) {
             this.shape = shape;
         }
 
-        public float getX() {
+        float getX() {
             return x;
         }
 
-        public void setX(float x) {
+        void setX(float x) {
             this.x = x;
         }
 
-        public float getY() {
+        float getY() {
             return y;
         }
 
-        public void setY(float y) {
+        void setY(float y) {
             this.y = y;
         }
 
-        public int getRadius() {
+        int getRadius() {
             return radius;
         }
 
-        public void setRadius(int radius) {
+        void setRadius(int radius) {
             this.radius = radius;
         }
 
-        public ShapeDrawable getShape() {
+        ShapeDrawable getShape() {
             return shape;
         }
 

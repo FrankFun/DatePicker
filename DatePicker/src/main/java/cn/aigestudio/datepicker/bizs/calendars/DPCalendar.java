@@ -11,7 +11,7 @@ import java.util.Calendar;
  * @author AigeStudio 2015-06-15
  */
 public abstract class DPCalendar {
-    protected final Calendar calendar = Calendar.getInstance();
+    private final Calendar calendar = Calendar.getInstance();
 
     /**
      * 获取某年某月的节日数组
@@ -44,9 +44,9 @@ public abstract class DPCalendar {
      * @param month 某月
      * @return 某年某月的公历天数数组
      */
-    String[][] buildMonthG(int year, int month) {
+    int[][] buildMonthG(int year, int month) {
         calendar.clear();
-        String tmp[][] = new String[6][7];
+        int tmp[][] = new int[6][7];
         calendar.set(year, month - 1, 1);
         int daysInMonth;
         if (month == 2) {
@@ -65,11 +65,8 @@ public abstract class DPCalendar {
         int day = 1;
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
-                tmp[i][j] = "";
-                if (i == 0 && j >= dayOfWeek) {
-                    tmp[i][j] += day;
-                    day++;
-                } else if (i > 0 && day <= daysInMonth) {
+                tmp[i][j] = 0;
+                if ((i == 0 && j >= dayOfWeek) || (i > 0 && day <= daysInMonth)) {
                     tmp[i][j] += day;
                     day++;
                 }

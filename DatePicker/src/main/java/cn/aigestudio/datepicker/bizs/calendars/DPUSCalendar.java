@@ -44,14 +44,14 @@ public class DPUSCalendar extends DPCalendar {
 
     @Override
     public String[][] buildMonthFestival(int year, int month) {
-        String[][] gregorianMonth = buildMonthG(year, month);
+        int[][] gregorianMonth = buildMonthG(year, month);
         String tmp[][] = new String[6][7];
         for (int i = 0; i < tmp.length; i++) {
             for (int j = 0; j < tmp[0].length; j++) {
                 tmp[i][j] = "";
-                String day = gregorianMonth[i][j];
-                if (!TextUtils.isEmpty(day)) {
-                    tmp[i][j] = getFestivalG(month, Integer.valueOf(day));
+                int day = gregorianMonth[i][j];
+                if (0!=day) {
+                    tmp[i][j] = getFestivalG(month, day);
                 }
             }
         }

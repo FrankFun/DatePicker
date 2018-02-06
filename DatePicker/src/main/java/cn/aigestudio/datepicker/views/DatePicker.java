@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import cn.aigestudio.datepicker.bizs.decors.DPDecor;
 import cn.aigestudio.datepicker.bizs.languages.DPLManager;
 import cn.aigestudio.datepicker.bizs.themes.DPTManager;
 import cn.aigestudio.datepicker.cons.DPMode;
@@ -36,7 +35,7 @@ public class DatePicker extends LinearLayout {
      * 日期单选监听器
      */
     public interface OnDatePickedListener {
-        void onDatePicked(String date);
+        void onDatePicked(int year, int month, int day);
     }
 
     public interface OnDateChangedListener {
@@ -121,9 +120,9 @@ public class DatePicker extends LinearLayout {
         monthView.setDate(year, month);
     }
 
-    public void setDPDecor(DPDecor decor) {
-        monthView.setDPDecor(decor);
-    }
+//    public void setDPDecor(DPDecor decor) {
+//        monthView.setDPDecor(decor);
+//    }
 
     /**
      * 设置日期选择模式

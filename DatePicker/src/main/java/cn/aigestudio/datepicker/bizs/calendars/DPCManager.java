@@ -1,5 +1,6 @@
 package cn.aigestudio.datepicker.bizs.calendars;
 
+import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import java.util.Calendar;
@@ -21,12 +22,12 @@ public final class DPCManager {
     private static HashMap<Integer, HashMap<Integer, DPInfo[][]>> DATE_CACHE = new HashMap<>();
     private static HashMap<Integer, Set<Integer>> DECOR_CHANGED = new HashMap<>();
 
-    private static HashMap<String, Set<String>> DECOR_CACHE_BG = new HashMap<>();
-    private static HashMap<String, Set<String>> DECOR_CACHE_TL = new HashMap<>();
-    private static HashMap<String, Set<String>> DECOR_CACHE_T = new HashMap<>();
-    private static HashMap<String, Set<String>> DECOR_CACHE_TR = new HashMap<>();
-    private static HashMap<String, Set<String>> DECOR_CACHE_L = new HashMap<>();
-    private static HashMap<String, Set<String>> DECOR_CACHE_R = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_BG = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_TL = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_T = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_TR = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_L = new HashMap<>();
+    private static HashMap<String, HashMap<Integer, Bitmap>> DECOR_CACHE_R = new HashMap<>();
 
     private static DPCManager sManager;
     private Calendar calendar = Calendar.getInstance();
@@ -69,28 +70,28 @@ public final class DPCManager {
         this.c = c;
     }
 
-    public void addDecorBG(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_BG);
+    public void addDecorBG(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_BG);
     }
 
-    public void addDecorTL(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_TL);
+    public void addDecorTL(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_TL);
     }
 
-    public void addDecorT(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_T);
+    public void addDecorT(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_T);
     }
 
-    public void addDecorTR(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_TR);
+    public void addDecorTR(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_TR);
     }
 
-    public void addDecorL(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_L);
+    public void addDecorL(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_L);
     }
 
-    public void addDecorR(int year, int month, int day) {
-        addDecor(year, month, day, DECOR_CACHE_R);
+    public void addDecorR(int year, int month, int day, Bitmap decor) {
+        addDecor(year, month, day, decor, DECOR_CACHE_R);
     }
 
     /**
@@ -118,14 +119,14 @@ public final class DPCManager {
         return dataOfMonth;
     }
 
-    private void addDecor(int year, int month, int day, HashMap<String, Set<String>> cache) {
+    private void addDecor(int year, int month, int day, Bitmap decor, HashMap<String, HashMap<Integer, Bitmap>> cache) {
         String key = year + "-" + month;
-        Set<String> days = cache.get(key);
+        HashMap<Integer, Bitmap> days = cache.get(key);
         if (null == days) {
-            days = new HashSet<>();
+            days = new HashMap<>();
             cache.put(key, days);
         }
-        days.add(day + "");
+        days.put(day , decor);
         Set<Integer> monthsChanged = DECOR_CHANGED.get(year);
         if (monthsChanged == null) {
             monthsChanged = new HashSet<>();
@@ -150,15 +151,15 @@ public final class DPCManager {
     private DPInfo[][] buildDPInfo(int year, int month) {
         DPInfo[][] info = new DPInfo[6][7];
 
-        String[][] strG = c.buildMonthG(year, month);
+        int[][] strG = c.buildMonthG(year, month);
         String[][] strF = c.buildMonthFestival(year, month);
         String key = year + "-" + month;
-        Set<String> decorBG = DECOR_CACHE_BG.get(key);
-        Set<String> decorTL = DECOR_CACHE_TL.get(key);
-        Set<String> decorT = DECOR_CACHE_T.get(key);
-        Set<String> decorTR = DECOR_CACHE_TR.get(key);
-        Set<String> decorL = DECOR_CACHE_L.get(key);
-        Set<String> decorR = DECOR_CACHE_R.get(key);
+        HashMap<Integer, Bitmap> decorBG = DECOR_CACHE_BG.get(key);
+        HashMap<Integer, Bitmap> decorTL = DECOR_CACHE_TL.get(key);
+        HashMap<Integer, Bitmap> decorT = DECOR_CACHE_T.get(key);
+        HashMap<Integer, Bitmap> decorTR = DECOR_CACHE_TR.get(key);
+        HashMap<Integer, Bitmap> decorL = DECOR_CACHE_L.get(key);
+        HashMap<Integer, Bitmap> decorR = DECOR_CACHE_R.get(key);
 
         for (int i = 0; i < info.length; i++) {
             for (int j = 0; j < info[i].length; j++) {
@@ -172,19 +173,19 @@ public final class DPCManager {
                 tmp.isToday = todayYear == year && todayMonth == month && Objects.equals(tmp.strG, todayDay);
                 if (j == 0 || j == info[i].length - 1) tmp.isWeekend = true;
                 if (c instanceof DPCNCalendar) {
-                    if (!TextUtils.isEmpty(tmp.strG)) tmp.isSolarTerms =
-                            ((DPCNCalendar) c).isSolarTerm(year, month, Integer.valueOf(tmp.strG));
+                    if (0 != tmp.strG) tmp.isSolarTerms =
+                            ((DPCNCalendar) c).isSolarTerm(year, month, tmp.strG);
                     if (!TextUtils.isEmpty(strF[i][j]) && strF[i][j].endsWith("F"))
                         tmp.isFestival = true;
                 } else {
                     tmp.isFestival = !TextUtils.isEmpty(strF[i][j]);
                 }
-                if (null != decorBG && decorBG.contains(tmp.strG)) tmp.isDecorBG = true;
-                if (null != decorTL && decorTL.contains(tmp.strG)) tmp.isDecorTL = true;
-                if (null != decorT && decorT.contains(tmp.strG)) tmp.isDecorT = true;
-                if (null != decorTR && decorTR.contains(tmp.strG)) tmp.isDecorTR = true;
-                if (null != decorL && decorL.contains(tmp.strG)) tmp.isDecorL = true;
-                if (null != decorR && decorR.contains(tmp.strG)) tmp.isDecorR = true;
+                if (null != decorBG) tmp.isDecorBG = decorBG.get(tmp.strG);
+                if (null != decorTL) tmp.isDecorTL = decorTL.get(tmp.strG);
+                if (null != decorT) tmp.isDecorT = decorT.get(tmp.strG);
+                if (null != decorTR) tmp.isDecorTR = decorTR.get(tmp.strG);
+                if (null != decorL) tmp.isDecorL = decorL.get(tmp.strG);
+                if (null != decorR) tmp.isDecorR = decorR.get(tmp.strG);
                 info[i][j] = tmp;
             }
         }
